@@ -17,7 +17,7 @@ services:
       start_period: 45s
 
   rabbitmq:
-    image: rabbitmq:3.12-management
+    image: rabbitmq:3.13-management
     container_name: rabbitmq
     ports:
       - "5672:5672"
@@ -34,7 +34,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 20s
+      start_period: 30s
 
   auth_service:
     build: ./backend/auth_service
