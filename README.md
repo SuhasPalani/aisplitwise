@@ -14,6 +14,7 @@ This project implements a sophisticated AI-powered expense-sharing platform, aki
 - [Architecture](#architecture)
 - [Services](#services)
 - [Technology Stack](#technology-stack)
+- [System Design](#system-design)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Local Development with Docker Compose](#local-development-with-docker-compose)
@@ -105,6 +106,9 @@ Here's a detailed overview of each service, its location, and exposed ports:
     * **Docker**
     * **Docker Compose** (for local development)
     * **Kubernetes** (for deployment)
+ 
+## System Design
+![image](https://github.com/user-attachments/assets/f07ae583-1c19-4c95-aa8b-34c4588ab26a)
 
 ## Getting Started
 
