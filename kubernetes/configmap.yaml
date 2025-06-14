@@ -1,0 +1,28 @@
+# kubernetes/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: splitwise-config
+  namespace: splitwise-dev
+data:
+  # MongoDB Database Names
+  AUTH_DB_NAME: "auth_db"
+  USER_DB_NAME: "user_db"
+  GROUP_DB_NAME: "group_db"
+  EXPENSE_DB_NAME: "expense_db"
+  PAYMENT_DB_NAME: "payment_db"
+  REPORTING_DB_NAME: "reporting_db"
+
+  # JWT Settings (common to all services validating tokens)
+  JWT_ALGORITHM: "HS256"
+  ACCESS_TOKEN_EXPIRE_MINUTES: "30"
+
+  # RabbitMQ Settings
+  RABBITMQ_HOST: "rabbitmq-service.splitwise-dev.svc.cluster.local" # Internal K8s service name
+  RABBITMQ_PORT: "5672"
+  RABBITMQ_QUEUE_EXPENSE_CREATED: "expense_created_queue"
+  RABBITMQ_QUEUE_PAYMENT_PROCESSED: "payment_processed_queue"
+  RABBITMQ_QUEUE_REPORT_REQUESTED: "report_requested_queue"
+
+  # AI Splitter specific (if needed, otherwise define in AI service deployment)
+  GEMINI_MODEL_NAME: "gemini-pro"

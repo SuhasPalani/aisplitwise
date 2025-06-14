@@ -5,9 +5,11 @@ from app.api.v1.endpoints import users
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    connect_to_mongo()
+    # connect_to_mongo is not an awaitable function in your database.py, so remove await
+    connect_to_mongo() 
     yield
-    close_mongo_connection()
+    # close_mongo_connection is not an awaitable function
+    close_mongo_connection() 
 
 app = FastAPI(
     title="User Service",

@@ -1,0 +1,16 @@
+# kubernetes/payment-service/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+  namespace: splitwise-dev
+  labels:
+    app: payment-service
+spec:
+  selector:
+    app: payment-service
+  ports:
+    - protocol: TCP
+      port: 8005 # External service port
+      targetPort: 8000 # Container port
+  type: ClusterIP

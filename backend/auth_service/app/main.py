@@ -6,10 +6,12 @@ from app.api.v1.endpoints import auth
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Before application startup
-    connect_to_mongo()
+    # connect_to_mongo is not an awaitable function in your database.py, so remove await
+    await  connect_to_mongo() 
     yield
     # After application shutdown
-    close_mongo_connection()
+    # close_mongo_connection is not an awaitable function
+    await close_mongo_connection() 
 
 app = FastAPI(
     title="Auth Service",

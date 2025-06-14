@@ -1,0 +1,58 @@
+# kubernetes/auth-service/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  namespace: splitwise-dev
+  labels:
+    app: auth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+      - name: auth-service
+        image: your_docker_username/auth-service:latest # REPLACE WITH YOUR IMAGE
+        ports:
+        - containerPort: 8000
+        env:
+        - name: MONGO_DB_URL
+          value: "mongodb://$(MONGO_ROOT_USERNAME):$(MONGO_ROOT_PASSWORD)@mongodb.splitwise-dev.svc.cluster.local:27017/$(AUTH_DB_NAME)?authSource=admin"
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: splitwise-secrets
+              key: JWT_SECRET_KEY
+        - name: ALGORITHM
+          valueFrom:
+            configMapKeyRef:
+              name: splitwise-config
+              key: JWT_ALGORITHM
+        - name: ACCESS_TOKEN_EXPIRE_MINUTES
+          valueFrom:
+            configMapKeyRef:
+              name: splitwise-config
+              key: ACCESS_TOKEN_EXPIRE_MINUTES
+        - name: AUTH_DB_NAME # Explicitly setting for clarity if needed by app.core.config
+          valueFrom:
+            configMapKeyRef:
+              name: splitwise-config
+              key: AUTH_DB_NAME
+        readinessProbe:
+          httpGet:
+            path: /auth/health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /auth/health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20

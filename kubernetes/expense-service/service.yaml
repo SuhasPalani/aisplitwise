@@ -1,0 +1,16 @@
+# kubernetes/expense-service/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: expense-service
+  namespace: splitwise-dev
+  labels:
+    app: expense-service
+spec:
+  selector:
+    app: expense-service
+  ports:
+    - protocol: TCP
+      port: 8004 # External service port
+      targetPort: 8000 # Container port
+  type: ClusterIP

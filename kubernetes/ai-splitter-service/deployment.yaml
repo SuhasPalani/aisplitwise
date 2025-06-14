@@ -1,0 +1,84 @@
+# kubernetes/ai-splitter-service/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-splitter-service
+  namespace: splitwise-dev
+  labels:
+    app: ai-splitter-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-splitter-service
+  template:
+    metadata:
+      labels:
+        app: ai-splitter-service
+    spec:
+      containers:
+      - name: ai-splitter-service
+        image: your_docker_username/ai-splitter-service:latest # REPLACE WITH YOUR IMAGE
+        ports:
+        - containerPort: 8000
+        env:
+        - name: MONGO_DB_URL
+          value: "mongodb://$(MONGO_ROOT_USERNAME):$(MONGO_ROOT_PASSWORD)@mongodb.splitwise-dev.svc.cluster.local:27017/$(EXPENSE_DB_NAME)?authSource=admin" # Assumes it uses expense_db
+        - name: JWT_SECRET_KEY # If it exposes any authenticated endpoints
+          valueFrom:
+            secretKeyRef:
+              name: splitwise-secrets
+              key: JWT_SECRET_KEY
+        - name: JWT_ALGORITHM
+          valueFrom:
+            configMapKeyRef:
+              name: splitwise-config
+              key: JWT_ALGORITHM
+        - name: GEMINI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: splitwise-secrets
+              key: GEMINI_API_KEY
+        - name: GEMINI_MODEL_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: splitwise-config
+              key: GEMINI_MODEL_NAME
+        # RabbitMQ (if it consumes/produces messages)
+        - name: RABBITMQ_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: splitwise-config
+              key: RABBITMQ_HOST
+        - name: RABBITMQ_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: splitwise-config
+              key: RABBITMQ_PORT
+        - name: RABBITMQ_DEFAULT_USER
+          valueFrom:
+            secretKeyRef:
+              name: splitwise-secrets
+              key: RABBITMQ_DEFAULT_USER
+        - name: RABBITMQ_DEFAULT_PASS
+          valueFrom:
+            secretKeyRef:
+              name: splitwise-secrets
+              key: RABBITMQ_DEFAULT_PASS
+        - name: RABBITMQ_QUEUE_EXPENSE_CREATED # If it consumes this queue
+          valueFrom:
+            configMapKeyRef:
+              name: splitwise-config
+              key: RABBITMQ_QUEUE_EXPENSE_CREATED
+        readinessProbe:
+          httpGet:
+            path: /ai/health # Assuming /ai/health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /ai/health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20

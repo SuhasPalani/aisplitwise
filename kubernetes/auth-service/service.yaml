@@ -1,0 +1,16 @@
+# kubernetes/auth-service/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+  namespace: splitwise-dev
+  labels:
+    app: auth-service
+spec:
+  selector:
+    app: auth-service
+  ports:
+    - protocol: TCP
+      port: 8001 # External service port
+      targetPort: 8000 # Container port
+  type: ClusterIP

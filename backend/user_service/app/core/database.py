@@ -10,7 +10,7 @@ def connect_to_mongo():
     try:
         client = MongoClient(settings.MONGO_DB_URL)
         db = client.get_database()
-        client.admin.command('ismaster')
+        client.admin.command('ismaster') # Check connection
         print(f"User Service: Connected to MongoDB at {settings.MONGO_DB_URL}")
     except ConnectionFailure as e:
         print(f"User Service: Could not connect to MongoDB: {e}")

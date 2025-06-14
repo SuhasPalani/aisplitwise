@@ -1,0 +1,83 @@
+# kubernetes/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: splitwise-ingress
+  namespace: splitwise-dev
+  annotations:
+    # IMPORTANT: Ensure your Ingress Controller supports these annotations.
+    # For NGINX Ingress Controller, these are common:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$2 # This is crucial for path prefixing
+    nginx.ingress.kubernetes.io/use-regex: "true" # Required for rewrite-target with regex
+spec:
+  rules:
+  - host: splitwise.local # Map this in your /etc/hosts or DNS
+    http:
+      paths:
+      # Auth Service
+      - path: /auth(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: auth-service
+            port:
+              number: 8001
+      # User Service
+      - path: /users(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: user-service
+            port:
+              number: 8002
+      # Group Service
+      - path: /groups(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: group-service
+            port:
+              number: 8003
+      # Expense Service
+      - path: /expenses(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: expense-service
+            port:
+              number: 8004
+      # Payment Service
+      - path: /payments(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: payment-service
+            port:
+              number: 8005
+      # AI Splitter Service
+      - path: /ai(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: ai-splitter-service
+            port:
+              number: 8006
+      # Reporting Service
+      - path: /reports(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: reporting-service
+            port:
+              number: 8007
+      # Frontend (React App) - usually served by a separate static file server or a dedicated NGINX pod
+      # If your frontend is served from its own service/pod (e.g., an Nginx container serving static files)
+      # you would define its path here. For now, assuming direct access or local dev serving.
+      # - path: /
+      #   pathType: Prefix
+      #   backend:
+      #     service:
+      #       name: frontend-service # e.g. frontend-nginx
+      #       port:
+      #         number: 80

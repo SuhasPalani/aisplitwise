@@ -1,0 +1,19 @@
+# kubernetes/rabbitmq/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-service
+  namespace: splitwise-dev
+  labels:
+    app: rabbitmq
+spec:
+  ports:
+  - port: 5672
+    targetPort: 5672
+    name: amqp
+  - port: 15672 # Management UI (optional, good for dev)
+    targetPort: 15672
+    name: management
+  selector:
+    app: rabbitmq
+  clusterIP: None # Headless service for StatefulSet

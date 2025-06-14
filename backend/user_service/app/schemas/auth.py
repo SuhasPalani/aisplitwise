@@ -1,8 +1,8 @@
-# backend/user_service/app/schemas/auth.py
+# This schema exists in user_service because get_current_user needs to return it
+# and it needs to be defined locally within the user_service context.
 from pydantic import BaseModel, EmailStr
-from typing import Optional
 
 class CurrentUser(BaseModel):
     username: str
     email: EmailStr
-    # Add any other fields you expect from the token payload (e.g., user_id)
+    id: str # ID field to match what Auth Service puts in the token

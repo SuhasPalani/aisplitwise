@@ -1,0 +1,16 @@
+# kubernetes/user-service/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  namespace: splitwise-dev
+  labels:
+    app: user-service
+spec:
+  selector:
+    app: user-service
+  ports:
+    - protocol: TCP
+      port: 8002 # External service port
+      targetPort: 8000 # Container port
+  type: ClusterIP

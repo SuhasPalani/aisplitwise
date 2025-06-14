@@ -1,0 +1,16 @@
+# kubernetes/group-service/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: group-service
+  namespace: splitwise-dev
+  labels:
+    app: group-service
+spec:
+  selector:
+    app: group-service
+  ports:
+    - protocol: TCP
+      port: 8003 # External service port
+      targetPort: 8000 # Container port
+  type: ClusterIP

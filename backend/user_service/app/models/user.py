@@ -1,10 +1,7 @@
-# backend/user_service/app/models/user.py
-
-from pydantic import BaseModel, EmailStr # Ensure BaseModel is imported
+from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 from typing import Optional, List
 
-# You might have a custom ObjectID type or need to handle it for MongoDB
 from bson import ObjectId
 
 class PyObjectId(ObjectId):
@@ -13,14 +10,14 @@ class PyObjectId(ObjectId):
         yield cls.validate
 
     @classmethod
+    def __modify_schema__(cls, field_schema: dict):
+        field_schema.update(type="string")
+
+    @classmethod
     def validate(cls, v):
         if not ObjectId.is_valid(v):
             raise ValueError("Invalid ObjectId")
         return ObjectId(v)
-
-    @classmethod
-    def __modify_schema__(cls, field_schema: dict):
-        field_schema.update(type="string")
 
 class UserBase(BaseModel):
     username: str
@@ -29,14 +26,14 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
 
-class UserInDB(UserBase): # Assuming this is the class that was failing
-    id: Optional[PyObjectId] = None # MongoDB _id
-    hashed_password: str
+# IMPORTANT: This MUST match the schema used by auth_service for storing users
+class UserInDB(UserBase):
+    id: Optional[PyObjectId] = Field(alias="_id", default=None) # MongoDB _id
+    passwordHash: str # Changed from 'hashed_password' to 'passwordHash' to match Auth Service
     friends: List[str] = []
-    created_at: datetime = datetime.now()
+    created_at: datetime = Field(default_factory=datetime.utcnow) # Use utcnow for timezone awareness
 
     class Config:
+        populate_by_name = True # Pydantic v2 setting, replaces allow_population_by_field_name
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
-        allow_population_by_field_name = True
-        fields = {"id": {"alias": "_id"}} # Map 'id' to '_id' for MongoDB

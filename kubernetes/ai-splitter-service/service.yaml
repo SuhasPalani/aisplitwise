@@ -1,0 +1,16 @@
+# kubernetes/ai-splitter-service/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-splitter-service
+  namespace: splitwise-dev
+  labels:
+    app: ai-splitter-service
+spec:
+  selector:
+    app: ai-splitter-service
+  ports:
+    - protocol: TCP
+      port: 8006 # Choose an appropriate port
+      targetPort: 8000 # Container port
+  type: ClusterIP

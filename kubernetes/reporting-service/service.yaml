@@ -1,0 +1,16 @@
+# kubernetes/reporting-service/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: reporting-service
+  namespace: splitwise-dev
+  labels:
+    app: reporting-service
+spec:
+  selector:
+    app: reporting-service
+  ports:
+    - protocol: TCP
+      port: 8007 # Choose an appropriate port
+      targetPort: 8000 # Container port
+  type: ClusterIP

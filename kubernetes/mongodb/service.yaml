@@ -1,0 +1,16 @@
+# kubernetes/mongodb/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+  namespace: splitwise-dev
+  labels:
+    app: mongodb
+spec:
+  ports:
+  - port: 27017
+    targetPort: 27017
+    name: mongo-port
+  selector:
+    app: mongodb
+  clusterIP: None # Headless service for StatefulSet for stable network IDs

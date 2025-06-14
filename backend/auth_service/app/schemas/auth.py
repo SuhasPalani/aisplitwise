@@ -5,7 +5,7 @@ class UserCreate(BaseModel):
     username: str = Field(min_length=3, max_length=20)
     password: str = Field(min_length=6)
 
-class UserLogin(BaseModel):
+class UserLogin(BaseModel): 
     username: str
     password: str
 
